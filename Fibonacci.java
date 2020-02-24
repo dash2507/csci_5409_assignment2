@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Random;
 
 class Fibonacci {
-  public static void main(String args[]) {
+  static FileWriter csvWriter;
+
+  public static void main(String args[]) throws IOException {
+    csvWriter = new FileWriter("fibonacci.csv");
+    makeHeaders("Number", "Time");
     storeRandomNumbers();
     List<Integer> numbers = readNumbers();
     printFibonacci(numbers);
@@ -68,14 +72,18 @@ class Fibonacci {
   }
 
   public static void printFibonacci(List<Integer> numbers) {
+    long start, diff;
     for (int number : numbers) {
       int i, fibo = 0;
+      start = System.nanoTime();
       System.out.print("Fibonacci of " + number + " is: ");
       for (i = 0; i < number; i++) {
         fibo += i;
         System.out.print(fibo+" ");
       }
+      diff = System.nanoTime() - start;
       System.out.println();
+      writeRow(number, diff);
     }
   }
 
@@ -83,4 +91,22 @@ class Fibonacci {
     Random r = new Random();
     return r.nextInt((max - min) + 1) + min;
   }
+
+  public static void makeHeaders(String ... headers) throws IOException {
+    for( int i=0; i<headers.length-1;i++){
+      csvWriter.append(headers[i]+",");
+  }
+  csvWriter.append(headers[headers.length-1]+"\n");
+  csvWriter.flush();
+  }
+
+  public static void writeRow(int number, long time){
+    try {
+        csvWriter.append(number + ",");
+        csvWriter.append(time + "\n");
+        csvWriter.flush();
+    }catch (IOException e){
+        System.err.println("Can't write Row");
+    }
+}
 }

@@ -11,7 +11,10 @@ import java.util.List;
 import java.util.Random;
 
 class Factorial {
-  public static void main(String args[]) {
+  static FileWriter csvWriter;
+  public static void main(String args[]) throws IOException {
+    csvWriter = new FileWriter("factorial.csv");
+    makeHeaders("Number", "Time");
     storeRandomNumbers();
     List<Integer> numbers = readNumbers();
     printFactorial(numbers);
@@ -68,12 +71,16 @@ class Factorial {
   }
 
   public static void printFactorial(List<Integer> numbers) {
+    long start, diff;
     for (int number : numbers) {
       int i, fact = 1;
+      start = System.nanoTime();
       for (i = 1; i <= number; i++) {
         fact = fact * i;
       }
-      System.out.println("Factorial of " + number + " is: " + fact);
+      diff = System.nanoTime() - start;
+      // System.out.println("Factorial of " + number + " is: " + fact);
+      writeRow(number, diff);
     }
   }
 
@@ -81,4 +88,22 @@ class Factorial {
     Random r = new Random();
     return r.nextInt((max - min) + 1) + min;
   }
+
+  public static void makeHeaders(String ... headers) throws IOException {
+    for( int i=0; i<headers.length-1;i++){
+      csvWriter.append(headers[i]+",");
+  }
+  csvWriter.append(headers[headers.length-1]+"\n");
+  csvWriter.flush();
+  }
+
+  public static void writeRow(int number, long time){
+    try {
+        csvWriter.append(number + ",");
+        csvWriter.append(time + "\n");
+        csvWriter.flush();
+    }catch (IOException e){
+        System.err.println("Can't write Row");
+    }
+}
 }
