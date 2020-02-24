@@ -20,7 +20,7 @@ class Fibonacci {
   public static void storeRandomNumbers() {
     List<Integer> list = new ArrayList<Integer>();
     for (int i = 0; i < 100; i++)
-      list.add(generateRandomIntIntRange(0,15));
+      list.add(generateRandomIntIntRange(1,15));
     Collections.shuffle(list);
     try {
       File file = new File("./input.txt");
